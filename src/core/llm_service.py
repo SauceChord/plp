@@ -72,7 +72,7 @@ class LLMService:
             print(f"LLM Error: {e}")
             return []
 
-    def resolve_block(self, task_title: str, block_reason: str) -> List[Dict[str, str]]:
+    def resolve_block(self, task_title: str, block_reason: str, language: str = "en") -> List[Dict[str, str]]:
         """
         Returns a list of subtasks to resolve a specific block.
         """
@@ -88,6 +88,7 @@ class LLMService:
         The user says: "{block_reason}"
         
         Provide 2-4 concrete, small steps to resolve this specific blocker and get back on track.
+        Reply in {language}.
         Return ONLY a JSON array of objects with "title" and "description" keys.
         """
 

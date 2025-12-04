@@ -15,11 +15,11 @@ class RewardView(ttk.Frame):
         container = ttk.Frame(self)
         container.grid(row=0, column=0)
         
-        ttk.Label(container, text="Great Job! 💪", font=("Helvetica", 18), wraplength=600).pack(pady=20)
-        ttk.Label(container, text="Do whatever you want for a while.", font=("Helvetica", 12), wraplength=600).pack(pady=20)
-        ttk.Label(container, text="You earned it! 🎉", font=("Helvetica", 18), wraplength=600).pack(pady=20)
+        ttk.Label(container, text=self.app.loc.get("great_job"), font=("Helvetica", 18), wraplength=600).pack(pady=20)
+        ttk.Label(container, text=self.app.loc.get("reward_desc"), font=("Helvetica", 12), wraplength=600).pack(pady=20)
+        ttk.Label(container, text=self.app.loc.get("earned_it"), font=("Helvetica", 18), wraplength=600).pack(pady=20)
         
-        ttk.Button(container, text="I am ready again!", command=self._next).pack(pady=20)
+        ttk.Button(container, text=self.app.loc.get("ready_again"), command=self._next).pack(pady=20)
 
     def _next(self):
         self.app.show_focus_view()

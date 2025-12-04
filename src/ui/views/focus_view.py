@@ -20,10 +20,9 @@ class FocusView(ttk.Frame):
         container.grid(row=0, column=0)
         
         if not self.task:
-            ttk.Label(container, text="No tasks! You are free.", font=("Helvetica", 16)).pack(pady=20)
-            ttk.Button(container, text="Add Task", command=self._add_task).pack(pady=10)
+            ttk.Label(container, text=self.app.loc.get("no_tasks"), font=("Helvetica", 16)).pack(pady=20)
+            ttk.Button(container, text=self.app.loc.get("add_task"), command=self._add_task).pack(pady=10)
         else:
-            # ttk.Label(container, text="Current Task:", font=("Helvetica", 12)).pack(pady=5)
             ttk.Label(container, text=self.task.title, font=("Helvetica", 24, "bold"), wraplength=600).pack(pady=20)
             if self.task.description:
                 ttk.Label(container, text=self.task.description, font=("Helvetica", 12), wraplength=600).pack(pady=10)
@@ -31,11 +30,11 @@ class FocusView(ttk.Frame):
             btn_frame = ttk.Frame(container)
             btn_frame.pack(pady=30)
             
-            ttk.Button(btn_frame, text="Done", command=self._mark_done).pack(side=tk.LEFT, padx=10)
-            ttk.Button(btn_frame, text="I feel blocked", command=self._cant_do).pack(side=tk.LEFT, padx=10)
-            ttk.Button(btn_frame, text="Skip", command=self._skip).pack(side=tk.LEFT, padx=10)
+            ttk.Button(btn_frame, text=self.app.loc.get("done"), command=self._mark_done).pack(side=tk.LEFT, padx=10)
+            ttk.Button(btn_frame, text=self.app.loc.get("blocked"), command=self._cant_do).pack(side=tk.LEFT, padx=10)
+            ttk.Button(btn_frame, text=self.app.loc.get("skip"), command=self._skip).pack(side=tk.LEFT, padx=10)
             
-            ttk.Button(container, text="Add New Task", command=self._add_task).pack(pady=20)
+            ttk.Button(container, text=self.app.loc.get("add_new_task"), command=self._add_task).pack(pady=20)
 
     def _mark_done(self):
         if self.task:
@@ -47,7 +46,7 @@ class FocusView(ttk.Frame):
         if not self.task:
             return
             
-        reason = simpledialog.askstring("Blocked", "What is blocking you?")
+        reason = simpledialog.askstring(self.app.loc.get("blocked"), self.app.loc.get("what_blocking"))
         if not reason:
             return
 
@@ -59,7 +58,7 @@ class FocusView(ttk.Frame):
         thread.start()
 
     def _resolve_block_async(self, task_title, reason):
-        subtasks = self.app.llm_service.resolve_block(task_title, reason)
+        subtasks = self.app.llm_service.resolve_block(task_title, reason, language=self.app.loc.language)
         # Schedule update on main thread
         self.after(0, self._handle_block_result, subtasks)
 
@@ -73,7 +72,7 @@ class FocusView(ttk.Frame):
             # Refresh view
             self.app.show_focus_view()
         else:
-            tk.messagebox.showerror("Error", "Could not resolve block.")
+            tk.messagebox.showerror("Error", self.app.loc.get("error_resolve"))
 
     def _set_loading_state(self, is_loading):
         # Find the button frame to disable buttons
@@ -97,7 +96,7 @@ class FocusView(ttk.Frame):
             # No, message box is blocking.
             # Let's add a loading label to the bottom of self if it doesn't exist.
             
-            self.loading_label = ttk.Label(self, text="Thinking... Please wait.", font=("Helvetica", 14, "italic"))
+            self.loading_label = ttk.Label(self, text=self.app.loc.get("thinking"), font=("Helvetica", 14, "italic"))
             self.loading_label.place(relx=0.5, rely=0.9, anchor=tk.CENTER)
             self.update() # Force update
         else:
@@ -113,7 +112,7 @@ class FocusView(ttk.Frame):
             self.app.show_focus_view()
 
     def _add_task(self):
-        title = simpledialog.askstring("New Task", "What do you need to do?")
+        title = simpledialog.askstring(self.app.loc.get("new_task_title"), self.app.loc.get("new_task_prompt"))
         if title:
             self.app.state_manager.add_task(title)
             self.app.show_focus_view()

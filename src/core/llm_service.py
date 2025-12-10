@@ -11,10 +11,11 @@ class LLMService:
         self.api_key = None
         self.model = "gpt-4o-mini"
         self.client = None
+        self.base_url = None
         self._load_config(config_path)
         
         if self.api_key and OpenAI:
-            self.client = OpenAI(api_key=self.api_key)
+            self.client = OpenAI(api_key=self.api_key, base_url=self.base_url)
 
     def _load_config(self, config_path):
         if os.path.exists(config_path):
@@ -23,6 +24,7 @@ class LLMService:
                     config = json.load(f)
                     self.api_key = config.get("openai_api_key")
                     self.model = config.get("model", "gpt-4o-mini")
+                    self.base_url = config.get("llm_base_url")
             except Exception as e:
                 print(f"Error loading config: {e}")
 
